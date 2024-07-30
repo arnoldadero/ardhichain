@@ -2,26 +2,34 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 )
 
-func SearchHandler(w http.ResponseWriter, r *http.Request) {
+func searchHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("searchHandler called") // Log when the handler is called
+
 	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		http.Error(w, "Invalid ID", http.StatusBadRequest)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid ID"})
 		return
 	}
 
 	for _, block := range blockchain {
 		if block.ID == id {
+			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(block)
 			return
 		}
 	}
 
-	http.Error(w, "Block not found", http.StatusNotFound)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusNotFound)
+	json.NewEncoder(w).Encode(map[string]string{"error": "Block not found"})
 }
 
 func init() {
@@ -37,6 +45,7 @@ type Block struct {
 	Data         string `json:"data"`
 	Timestamp    string `json:"timestamp"`
 	Nonce        int    `json:"nonce"`
+	NationalID   string `json:"nationalId"`
 }
 
 var blockchain []Block

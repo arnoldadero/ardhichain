@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"html/template"
+	"text/template"
 	"net/http"
 )
 

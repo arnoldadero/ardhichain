@@ -15,6 +15,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	http.HandleFunc("/", handlers.IndexHandler)
 	http.HandleFunc("/search", handlers.IndexHandler)
+	http.HandleFunc("/verify", handlers.VerifyHandler)
 
 	log.Println("Server started on http://localhost:8080")
 
