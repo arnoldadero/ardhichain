@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <h1>ARDHI SMART</h1>
+        <h1>ARDHICHAIN</h1>
     </header>
     <div class="container">
         <div class="search-bar">
@@ -18,15 +18,20 @@
         <div class="results" id="results">
             <!-- Results will be displayed here -->
         </div>
+        <div class="verification" id="verification" style="display:none;">
+            <input type="text" id="nationalIdInput" placeholder="Enter your National ID...">
+            <button onclick="verifyNationalId()">Verify</button>
+        </div>
     </div>
     <footer>
-        <p>&copy; 2024 Your Company. All rights reserved.</p>
+        <p>&copy; 2024 ArdhiChain. All rights reserved.</p>
     </footer>
 
     <script>
         async function search() {
             const query = document.getElementById('searchInput').value;
             const resultsDiv = document.getElementById('results');
+            const verificationDiv = document.getElementById('verification');
             
             if (!query) {
                 resultsDiv.innerHTML = 'Please enter a search term.';
@@ -35,19 +40,30 @@
             
             resultsDiv.innerHTML = 'Searching...';
             
+            if (verificationDiv) {
+                verificationDiv.style.display = 'none';
+            }
+            
             try {
                 const response = await fetch(`http://localhost:8080/search?id=${query}`);
+                const text = await response.text();  // Get response as text
+                console.log('Response Text:', text);  // Log the response text
                 
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                
-                const block = await response.json();
-                
-                if (block) {
-                    displayResults(block);
+                if (response.ok) {
+                    try {
+                        const block = JSON.parse(text);  // Attempt to parse JSON
+                        if (block) {
+                            displayResults(block);
+                        } else {
+                            resultsDiv.innerHTML = 'No results found.';
+                        }
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        resultsDiv.innerHTML = 'Error parsing server response.';
+                    }
                 } else {
-                    resultsDiv.innerHTML = 'No results found.';
+                    console.error('Server returned an error:', response.status, response.statusText);
+                    resultsDiv.innerHTML = `Error: ${response.status} ${response.statusText}`;
                 }
             } catch (error) {
                 console.error('Error fetching the data:', error);
@@ -66,10 +82,60 @@
                     <p><strong>Data:</strong> ${block.data}</p>
                     <p><strong>Timestamp:</strong> ${block.timestamp}</p>
                     <p><strong>Nonce:</strong> ${block.nonce}</p>
+                    <button onclick="showVerification()">Verify National ID</button>
                 </div>
             `;
             
             resultsDiv.innerHTML = blockHTML;
+        }
+
+        function showVerification() {
+            const verificationDiv = document.getElementById('verification');
+            if (verificationDiv) {
+                verificationDiv.style.display = 'block';
+            }
+        }
+
+        async function verifyNationalId() {
+            const nationalId = document.getElementById('nationalIdInput').value;
+            
+            if (!nationalId) {
+                alert('Please enter your National ID.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`http://localhost:8080/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nationalId })
+                });
+
+                const text = await response.text();  // Get response as text
+                console.log('Response Text:', text);  // Log the response text
+                
+                if (response.ok) {
+                    try {
+                        const result = JSON.parse(text);  // Attempt to parse JSON
+                        if (result.verified) {
+                            window.location.href = '/verified.html';
+                        } else {
+                            alert('National ID verification failed.');
+                        }
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        alert('Error parsing server response.');
+                    }
+                } else {
+                    console.error('Server returned an error:', response.status, response.statusText);
+                    alert(`Error: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                console.error('Error verifying the national ID:', error);
+                alert('An error occurred while verifying the national ID.');
+            }
         }
 
     </script>
