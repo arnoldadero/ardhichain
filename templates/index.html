@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>ARDHI SMART</h1>
+    </header>
+    <div class="container">
+        <div class="search-bar">
+            <input type="text"  id="searchInput" placeholder="Enter title deed number..">
+            <button onclick="search()">Search</button>
+        </div>
+        <div class="results" id="results">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function search() {
+            const query = document.getElementById('searchInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!query) {
+                resultsDiv.innerHTML = 'Please enter a search term.';
+                return;
+            }
+            
+            resultsDiv.innerHTML = 'Searching...';
+            
+            try {
+                const response = await fetch(`http://localhost:8080/search?id=${query}`);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const block = await response.json();
+                
+                if (block) {
+                    displayResults(block);
+                } else {
+                    resultsDiv.innerHTML = 'No results found.';
+                }
+            } catch (error) {
+                console.error('Error fetching the data:', error);
+                resultsDiv.innerHTML = 'An error occurred while fetching the results.';
+            }
+        }
+
+        function displayResults(block) {
+            const resultsDiv = document.getElementById('results');
+            
+            const blockHTML = `
+                <div class="block">
+                    <p><strong>Block ID:</strong> ${block.id}</p>
+                    <p><strong>Previous Hash:</strong> ${block.previousHash}</p>
+                    <p><strong>Hash:</strong> ${block.hash}</p>
+                    <p><strong>Data:</strong> ${block.data}</p>
+                    <p><strong>Timestamp:</strong> ${block.timestamp}</p>
+                    <p><strong>Nonce:</strong> ${block.nonce}</p>
+                </div>
+            `;
+            
+            resultsDiv.innerHTML = blockHTML;
+        }
+
+    </script>
+</body>
+</html>
