@@ -1,4 +1,4 @@
- package main
+package main
 
 import (
 	"crypto/sha256"
@@ -13,12 +13,12 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-// // The Owner information
-// type Owner struct {
-// 	Name, Address, NextOfKin string
-// 	Id                       string
-// 	Contact                  int
-// }
+// The Owner information
+type Owner struct {
+	Name, Address, NextOfKin string
+	Id                       string
+	Contact                  int
+}
 
 // Title deed information
 type LandInfo struct {
@@ -64,29 +64,29 @@ type Blockchain struct {
 	mockContract *MockLandContract
 }
 
-// // Generating the hash of a block
-// func (b LandBlock) CalculateHash() string {
-// 	// convert the Data field to json for easy conversion to string
-// 	dataBytes, err := json.Marshal(b.Data)
-// 	if err != nil {
-// 		fmt.Println("Error converting data to json/n", err)
-// 		os.Exit(1)
+// Generating the hash of a block
+func (b LandBlock) CalculateHash() string {
+	// convert the Data field to json for easy conversion to string
+	dataBytes, err := json.Marshal(b.Data)
+	if err != nil {
+		fmt.Println("Error converting data to json/n", err)
+		os.Exit(1)
 
-// 	}
+	}
 
-// 	blockData := b.PreviousHash + string(dataBytes) + b.TimeStamp.String() + strconv.Itoa(b.Pow)
-// 	blockHash := sha256.Sum256([]byte(blockData))
+	blockData := b.PreviousHash + string(dataBytes) + b.TimeStamp.String() + strconv.Itoa(b.Pow)
+	blockHash := sha256.Sum256([]byte(blockData))
 
-// 	return fmt.Sprintf("%x", blockHash)
-// }
+	return fmt.Sprintf("%x", blockHash)
+}
 
-// // Mining new block
-// func (b *LandBlock) Mine(difficulty int) {
-// 	for !strings.HasPrefix(b.Hash, strings.Repeat("0", difficulty)) {
-// 		b.Pow++
-// 		b.Hash = b.CalculateHash()
-// 	}
-// }
+// Mining new block
+func (b *LandBlock) Mine(difficulty int) {
+	for !strings.HasPrefix(b.Hash, strings.Repeat("0", difficulty)) {
+		b.Pow++
+		b.Hash = b.CalculateHash()
+	}
+}
 
 // Creating the genesis blockchain
 func CreateBlockChain(difficulty int) Blockchain {
@@ -146,9 +146,9 @@ func (b Blockchain) IsValid() bool {
 			return false
 		}
 
-// 	}
-// 	return true
-// }
+	}
+	return true
+}
 
 // Print the blockchain for debugging
 func PrintBlockchain(chain []LandBlock) {
