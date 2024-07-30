@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia&effect=neon|outline|emboss|shadow-multiple">
     <link rel="stylesheet" href="/static/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <header>
@@ -108,38 +109,52 @@
             
             try {
                 const response = await fetch(`http://localhost:8080/verify`, {
-                    method: 'POST',
+                    method: 'POST', 
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ nationalId })
                 });
-
+                
+                if (!response.ok) {
+                    console.error('Server returned an error:', response.status, response.statusText);
+                    alert(`Error: ${response.status} ${response.statusText}`);
+                    return;
+                }
+                
                 const text = await response.text();  // Get response as text
                 console.log('Response Text:', text);  // Log the response text
                 
-                if (response.ok) {
-                    try {
-                        const result = JSON.parse(text);  // Attempt to parse JSON
-                        if (result.verified) {
-                            window.location.href = '/buyer.html';
-                        } else {
-                            alert('National ID verification failed.');
-                        }
-                    } catch (e) {
-                        console.error('Error parsing JSON:', e);
-                        alert('Error parsing server response.');
+                try {
+                    const result = JSON.parse(text);  // Attempt to parse JSON
+                    if (result.verified) {
+                        window.location.href = '/new-owner';
+                    } else {
+                        alert('National ID verification failed.');
                     }
-                } else {
-                    console.error('Server returned an error:', response.status, response.statusText);
-                    alert(`Error: ${response.status} ${response.statusText}`);
+                } catch (e) {
+                    console.error('Error parsing JSON:', e);
+                    alert('Error parsing server response.');
                 }
             } catch (error) {
                 console.error('Error verifying the national ID:', error);
                 alert('An error occurred while verifying the national ID.');
             }
         }
+        //         const response = await axios.post(`http://localhost:8080/verify`, {
+        //             nationalId: nationalId
+        //         });
 
+        //         if (response.data.verified) {
+        //             window.location.href = '/new-owner';
+        //         } else {
+        //             alert('National ID verification failed.');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error verifying the national ID:', error);
+        //         alert('An error occurred while verifying the national ID.');
+        //     }
+        // }
     </script>
 </body>
 </html>

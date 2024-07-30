@@ -46,9 +46,12 @@ func NewOwnerHandler(w http.ResponseWriter, r *http.Request) {
 	err = json.Unmarshal(body, &owner)
 	if err != nil {
 		log.Println("Error unmarshalling JSON:", err)
+		w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		//json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request body"})
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request body"})
 		return
 	}
 
@@ -57,7 +60,9 @@ func NewOwnerHandler(w http.ResponseWriter, r *http.Request) {
 
 	// For demonstration, we'll just print the owner details
 	fmt.Printf("New Owner: %+v\n", owner)
-
+	w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
+    w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+    w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"message": "New owner created successfully"})
 }

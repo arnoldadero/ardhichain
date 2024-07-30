@@ -12,7 +12,7 @@ func VerifyHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		NationalID string `json:"nationalId"`
 	}
-
+	fmt.Printf("Request body: %+v\n", req)
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
