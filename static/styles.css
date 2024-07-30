@@ -51,6 +51,10 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url('/ardhi.jpeg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 header {
@@ -59,31 +63,47 @@ header {
     text-align: center;
     padding: 1em;
 }
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.form-group {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
 button {
     background-color: #4CAF50;
     padding:15px;
     border-radius:10px
 }
 #searchInput {
-    width:20%;
+    width:80%;
     padding:20px 10px;
     border-radius: 20px; 
 }
 
 .container {
     padding: 2em;
+    
 }
 
 .search-bar {
     text-align: center;
-    margin-bottom: 2em;
+    margin-top: 2em;
+
 }
 
 .results {
     min-height: 200px;
-    border: 1px solid #ddd;
+    border: none;
     padding: 1em;
     margin-bottom: 2em;
+    
 }
 
 .verification {
@@ -99,4 +119,8 @@ footer {
     position: fixed;
     width: 100%;
     bottom: 0;
+}
+
+.font-effect-shadow-multiple {
+    font-size: 60px;
 }

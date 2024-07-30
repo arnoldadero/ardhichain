@@ -4,40 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buyer Page</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Sofia&effect=neon|outline|emboss|shadow-multiple">
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <header>
-        <h1>ARDHI SMART</h1>
+        <h1 class="font-effect-shadow-multiple">ARDHI CHAIN</h1>
     </header>
     <div class="container">
-        <form id="buyerForm">
+        <form id="buyerForm" class="form">
             <h2>New Owner Details</h2>
-            <div>
+            <fieldset>
+               <legend>Buyer Details</legend>
+            <div class="form-group">
                 <label for="firstName">First Name:</label>
                 <input type="text" id="firstName" name="firstName" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="lastName">Last Name:</label>
                 <input type="text" id="lastName" name="lastName" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="idNumber">ID Number:</label>
                 <input type="text" id="idNumber" name="idNumber" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="nextOfKinName">Next of Kin Name:</label>
                 <input type="text" id="nextOfKinName" name="nextOfKinName" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="nextOfKinIdNumber">Next of Kin ID Number:</label>
                 <input type="text" id="nextOfKinIdNumber" name="nextOfKinIdNumber" required>
             </div>
-            <div>
+            <div class="form-group">
                 <label for="amount">Amount in KSH:</label>
                 <input type="number" id="amount" name="amount" required>
             </div>
-            <button type="button" onclick="createNewOwner()">Submit</button>
+            <button type="button" onclick="createNewOwner()">Complete Transfer</button>
+        </fieldset>
         </form>
         <div id="result"></div>
     </div>
@@ -46,7 +50,7 @@
     </footer>
 
     <script>
-        async function createNewOwner() {
+         async function createNewOwner() {
             const form = document.getElementById('buyerForm');
             const resultDiv = document.getElementById('result');
 
@@ -60,17 +64,19 @@
                 timestamp: new Date().toISOString()
             };
 
+            console.log('Form Data:', formData); // Log the form data
+
             try {
                 const response = await fetch('http://localhost:8080/new-owner', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(formData)
+                    body: JSON.mashall(formData)
                 });
 
                 const text = await response.text();
-                console.log('Response Text:', text);
+                console.log('Response Text:', text); // Log the response text
 
                 if (response.ok) {
                     resultDiv.innerHTML = 'New owner created successfully!';
