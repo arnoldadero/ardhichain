@@ -212,4 +212,3 @@ func main() {
 	}
 	PrintBlockchain(blockchain.Chain)
 }
-

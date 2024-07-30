@@ -16,6 +16,7 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	http.HandleFunc("/", handlers.IndexHandler)
 	http.HandleFunc("/search", handlers.SearchHandler)
+
 	http.HandleFunc("/verify", func(w http.ResponseWriter, r *http.Request) {
 		// Set the CORS headers
 		w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
@@ -25,6 +26,7 @@ func main() {
 		// Handle the request
 		// ...
 	})
+
 	http.HandleFunc("/new-owner", handlers.NewOwnerHandler)
 
 	log.Println("Server started on http://localhost:8080")

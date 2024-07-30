@@ -116,25 +116,45 @@
                     body: JSON.stringify({ nationalId })
                 });
                 
-                if (!response.ok) {
-                    console.error('Server returned an error:', response.status, response.statusText);
-                    alert(`Error: ${response.status} ${response.statusText}`);
-                    return;
-                }
+//                 if (!response.ok) {
+//                     console.error('Server returned an error:', response.status, response.statusText);
+//                     alert(`Error: ${response.status} ${response.statusText}`);
+//                     return;
+//                 }
                 
+//                 const text = await response.text();  // Get response as text
+//                 console.log('Response Text:', text);  // Log the response text
+                
+//                 try {
+//                     const result = JSON.parse(text);  // Attempt to parse JSON
+//                     if (result.verified) {
+//                         window.location.href = '/new-owner';
+//                     } else {
+//                         alert('National ID verification failed.');
+//                     }
+//                 } catch (e) {
+//                     console.error('Error parsing JSON:', e);
+//                     alert('Error parsing server response.');
+// 
+
                 const text = await response.text();  // Get response as text
                 console.log('Response Text:', text);  // Log the response text
                 
-                try {
-                    const result = JSON.parse(text);  // Attempt to parse JSON
-                    if (result.verified) {
-                        window.location.href = '/new-owner';
-                    } else {
-                        alert('National ID verification failed.');
+                if (response.ok) {
+                    try {
+                        const result = JSON.parse(text);  // Attempt to parse JSON
+                        if (result.verified) {
+                            window.location.href = '/new-owner';
+                        } else {
+                            alert('National ID verification failed.');
+                        }
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        alert('Error parsing server response.');
                     }
-                } catch (e) {
-                    console.error('Error parsing JSON:', e);
-                    alert('Error parsing server response.');
+                } else {
+                    console.error('Server returned an error:', response.status, response.statusText);
+                    alert(`Error: ${response.status} ${response.statusText}`);
                 }
             } catch (error) {
                 console.error('Error verifying the national ID:', error);
@@ -155,6 +175,7 @@
         //         alert('An error occurred while verifying the national ID.');
         //     }
         // }
+
     </script>
 </body>
 </html>
