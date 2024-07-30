@@ -91,7 +91,7 @@ func (b *LandBlock) Mine(difficulty int) {
 // Creating the genesis blockchain
 func CreateBlockChain(difficulty int) Blockchain {
 	mockContract := &MockLandContract{
-		lands: make(map[string]LandInfo),
+		lands:        make(map[string]LandInfo),
 		transactions: make(map[string]bool),
 	}
 	genesisBlock := LandBlock{
@@ -185,7 +185,7 @@ func main() {
 	// Example transaction
 
 	transaction := Transaction{
-		ID: "001",
+		ID:          "001",
 		From:        "Bob",
 		To:          "Mary",
 		LandID:      initialLandID,
@@ -193,7 +193,7 @@ func main() {
 		Description: "Transfer of land ownership",
 	}
 	transaction_2 := Transaction{
-		ID : "002",
+		ID:          "002",
 		From:        "Bob",
 		To:          "Barrack",
 		LandID:      initialLandID,
