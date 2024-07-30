@@ -16,6 +16,7 @@ func main() {
 	http.HandleFunc("/", handlers.IndexHandler)
 	http.HandleFunc("/search", handlers.IndexHandler)
 	http.HandleFunc("/verify", handlers.VerifyHandler)
+	http.HandleFunc("/new-owner", handlers.NewOwnerHandler)
 
 	log.Println("Server started on http://localhost:8080")
 

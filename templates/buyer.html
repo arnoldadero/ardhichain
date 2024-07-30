@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Page</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>ARDHI SMART</h1>
+    </header>
+    <div class="container">
+        <form id="buyerForm">
+            <h2>New Owner Details</h2>
+            <div>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div>
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div>
+                <label for="idNumber">ID Number:</label>
+                <input type="text" id="idNumber" name="idNumber" required>
+            </div>
+            <div>
+                <label for="nextOfKinName">Next of Kin Name:</label>
+                <input type="text" id="nextOfKinName" name="nextOfKinName" required>
+            </div>
+            <div>
+                <label for="nextOfKinIdNumber">Next of Kin ID Number:</label>
+                <input type="text" id="nextOfKinIdNumber" name="nextOfKinIdNumber" required>
+            </div>
+            <div>
+                <label for="amount">Amount in KSH:</label>
+                <input type="number" id="amount" name="amount" required>
+            </div>
+            <button type="button" onclick="createNewOwner()">Submit</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </footer>
+
+    <script>
+        async function createNewOwner() {
+            const form = document.getElementById('buyerForm');
+            const resultDiv = document.getElementById('result');
+
+            const formData = {
+                firstName: form.firstName.value,
+                lastName: form.lastName.value,
+                idNumber: form.idNumber.value,
+                nextOfKinName: form.nextOfKinName.value,
+                nextOfKinIdNumber: form.nextOfKinIdNumber.value,
+                amount: form.amount.value,
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/new-owner', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const text = await response.text();
+                console.log('Response Text:', text);
+
+                if (response.ok) {
+                    resultDiv.innerHTML = 'New owner created successfully!';
+                    form.reset();
+                } else {
+                    console.error('Server returned an error:', response.status, response.statusText);
+                    resultDiv.innerHTML = `Error: ${response.status} ${response.statusText}`;
+                }
+            } catch (error) {
+                console.error('Error creating new owner:', error);
+                resultDiv.innerHTML = 'An error occurred while creating the new owner.';
+            }
+        }
+    </script>
+</body>
+</html>
