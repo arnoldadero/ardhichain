@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"golang.org/x/exp/rand"
@@ -29,11 +30,14 @@ type LandInfo struct {
 
 // Mockland contract to simulate transactions
 type MockLandContract struct {
-	lands map[string]LandInfo
+	lands        map[string]LandInfo
+	transactions map[string]bool
+	mu           sync.Mutex
 }
 
 // Adding a transaction struct
 type Transaction struct {
+	ID          string
 	From        string  // Sender or current owner
 	To          string  // New owner
 	LandID      string  // Identifier of the land being transacted
@@ -49,7 +53,7 @@ type LandBlock struct {
 	Hash         string
 	PreviousHash string
 	Pow          int
-	Transactions  []Transaction
+	Transactions []Transaction
 }
 
 // Custom Blockchain and adding ethereum client
@@ -87,7 +91,8 @@ func (b *LandBlock) Mine(difficulty int) {
 // Creating the genesis blockchain
 func CreateBlockChain(difficulty int) Blockchain {
 	mockContract := &MockLandContract{
-		lands : make(map[string]LandInfo),
+		lands: make(map[string]LandInfo),
+		transactions: make(map[string]bool),
 	}
 	genesisBlock := LandBlock{
 		Hash:      "0",
@@ -171,14 +176,16 @@ func main() {
 		Restrictions: "Yes",
 	})
 
-	blockchain.AddBlock("001", LandInfo{
-		LandSize: "50 sqm",
+	blockchain.AddBlock("0001", LandInfo{
+		LandSize:     "50 sqm",
 		LandLocation: "Kisumu Central",
 		Restrictions: "Yes",
 	})
 
 	// Example transaction
+
 	transaction := Transaction{
+		ID: "001",
 		From:        "Bob",
 		To:          "Mary",
 		LandID:      initialLandID,
@@ -186,10 +193,11 @@ func main() {
 		Description: "Transfer of land ownership",
 	}
 	transaction_2 := Transaction{
-		From: "Mary",
-		To: "Barrack",
-		LandID: "001",
-		Amount: 900,
+		ID : "002",
+		From:        "Bob",
+		To:          "Barrack",
+		LandID:      initialLandID,
+		Amount:      900,
 		Description: "Transfer of ownership",
 	}
 

@@ -14,6 +14,8 @@ func NewMockLandContract() *MockLandContract {
 
 // Register land in the smart contract
 func (m *MockLandContract) RegisterLand(id string, info LandInfo) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	if _, exists := m.lands[id]; exists{
 		fmt.Println("Land already Registered")
 	}
@@ -37,12 +39,18 @@ func (m *MockLandContract) TransferLand(id string, newOwner string) {
 // Function GetLand simulates getting land from the smart contract.
 
 func (m *MockLandContract) GetLand(id string) (LandInfo, bool) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
 	info, exists := m.lands[id]
 	return info, exists
 }
 
 // AddTransaction adds a transaction to the blockchain's latest block
 func (b *Blockchain) AddTransaction(tx Transaction) {
+	if !b.mockContract.RecordTransaction(tx.ID) {
+		fmt.Println("Transaction already processed:", tx.ID)
+		return
+	}
 	// Get the latest block
 	lastBlock := b.Chain[len(b.Chain)-1]
 
@@ -61,6 +69,17 @@ func (b *Blockchain) AddTransaction(tx Transaction) {
 
 	// Add the new block to the blockchain
 	b.Chain = append(b.Chain, newBlock)
+}
+
+
+func (m *MockLandContract) RecordTransaction(txID string) bool {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if _, exists := m.transactions[txID]; exists {
+		return false // Transaction already processed
+	}
+	m.transactions[txID] = true
+	return true
 }
 
 // UpdateLand simulates updating an existing land record
