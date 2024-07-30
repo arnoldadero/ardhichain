@@ -7,12 +7,15 @@ import (
 	"strconv"
 )
 
-func searchHandler(w http.ResponseWriter, r *http.Request) {
+func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("searchHandler called") // Log when the handler is called
 
 	idStr := r.URL.Query().Get("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
+		w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid ID"})
@@ -21,12 +24,17 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 	for _, block := range blockchain {
 		if block.ID == id {
+			w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			w.Header().Set("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(block)
 			return
 		}
 	}
-
+	w.Header().Set("Access-Control-Allow-Origin", "http://127.0.0.1:8080")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusNotFound)
 	json.NewEncoder(w).Encode(map[string]string{"error": "Block not found"})
@@ -34,7 +42,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 
 func init() {
 	// Initializing the blockchain with some dummy data
-	blockchain = append(blockchain, Block{ID: 1, PreviousHash: "0", Hash: "hash1", Data: "Block 1 Data", Timestamp: "2023-07-01T00:00:00Z", Nonce: 0})
+	blockchain = append(blockchain, Block{ID: 1, PreviousHash: "0", Hash: "hash1", Data: "Block 1 Data", Timestamp: "2023-07-01T00:00:00Z", NationalID: "123456789", Nonce: 0})
 	blockchain = append(blockchain, Block{ID: 2, PreviousHash: "hash1", Hash: "hash2", Data: "Block 2 Data", Timestamp: "2023-07-02T00:00:00Z", Nonce: 0})
 }
 
